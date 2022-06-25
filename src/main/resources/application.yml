@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/securityproject?useUnicode=true&characterEncoding=utf-8
+    username: cos
+    password: cos1234
+
+  security:
+    user:
+      name: user
+      password: 1111
+
+  logging:
+    level:
+      org.hibernate.SQL: debug
+      org.hibernate.type: trace
