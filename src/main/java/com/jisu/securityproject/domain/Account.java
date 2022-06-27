@@ -1,7 +1,6 @@
 package com.jisu.securityproject.domain;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,7 +28,7 @@ public class Account {
         this.role = role;
     }
 
-    public void encodedPassword(String password) {
+    public void encodPassword(String password) {
         this.password = password;
     }
 }

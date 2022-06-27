@@ -13,7 +13,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     public void createUser(Account account) {
-        account.encodedPassword(passwordEncoder.encode(account.getPassword()));
+        account.encodPassword(passwordEncoder.encode(account.getPassword()));
         userRepository.save(account);
     }
 }
