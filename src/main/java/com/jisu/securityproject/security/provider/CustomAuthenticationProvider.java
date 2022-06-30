@@ -2,9 +2,7 @@ package com.jisu.securityproject.security.provider;
 
 import com.jisu.securityproject.security.common.FormWebAuthenticationDetails;
 import com.jisu.securityproject.security.service.AccountContext;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
@@ -13,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @RequiredArgsConstructor
@@ -33,6 +32,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
      * @throws AuthenticationException
      */
     @Override
+    @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = (String)authentication.getCredentials();
