@@ -36,10 +36,10 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
     @Override
     @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String loginId = authentication.getName();
+        String username = authentication.getName();
         String password = (String)authentication.getCredentials();
 
-        AccountContext accountContext = (AccountContext)userDetailsService.loadUserByUsername(loginId);
+        AccountContext accountContext = (AccountContext)userDetailsService.loadUserByUsername(username);
 
         if(!passwordEncoder.matches(password, accountContext.getAccount().getPassword())) {
             throw new BadCredentialsException("BadCredentialsException");
