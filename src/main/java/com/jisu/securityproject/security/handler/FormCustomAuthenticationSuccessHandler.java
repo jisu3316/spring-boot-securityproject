@@ -14,10 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
+//인증성공후 처리하는 핸들러 시큐리티에서 제공하는 success SimpleUrlAuthenticationSuccessHandler 를 구현해서 만든다.
 @Component
-public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class FormCustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    //성공전 요청했던 url을 가져올수있다
     private RequestCache requestCache = new HttpSessionRequestCache();
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();

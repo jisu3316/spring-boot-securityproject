@@ -10,9 +10,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+//인증 실패 했을때의 핸들러 스프링시큐리티가 제공하는 SimpleUrlAuthenticationFailureHandler 을 상속받아 구현한다
 @Component
-public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+public class FormCustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     /**
      * 인증예외는 인증을 검증할때 인증에 실패하게되면 인증예외가 발생하게된다. 유저 디테일서비스에서 아이디가없거나 패스워드가 일치하지않으면 생기는 예외이다.

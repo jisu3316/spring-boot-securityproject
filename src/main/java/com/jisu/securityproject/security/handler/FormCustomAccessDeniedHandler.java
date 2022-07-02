@@ -7,10 +7,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+//인가 예외 처리 핸들러
+public class FormCustomAccessDeniedHandler implements AccessDeniedHandler {
 
     private String errorPage;
+
     /**
      * 인가예외 핸들러 현재사용자가 접근하려는 경로가 인가예외 발생
      * @param request that resulted in an <code>AccessDeniedException</code>

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class FormWebAuthenticationDetails extends WebAuthenticationDetails {
 
+    //FormWebAuthenticationDetails 클래스를 만들어주는 클래스이다.
     private String secretKey;
 
     /**

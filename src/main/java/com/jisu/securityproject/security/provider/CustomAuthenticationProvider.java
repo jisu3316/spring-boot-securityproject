@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-
+//UserDetails 반환 이 객체를 받아서 추가적인 검증하는 authenticationProvider구현해야함
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
@@ -23,10 +23,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final PasswordEncoder passwordEncoder;
 
-
-
     /**
      * 검증을 위한 구현
+     * authentication 는 authenticationManager로 부터 받는 인증객체이다. 사용자 정보가 담겨져있다.
      * @param authentication the authentication request object.
      * @return
      * @throws AuthenticationException
@@ -37,18 +36,22 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = (String)authentication.getCredentials();
 
+        //userDetailsService 구현한 User를 상속받은 custom 객체 AccountContext
+        //CustomUserDetailsService 여기서 accountContext 잘 건내받은거면 아이디는 검증된거다.
         AccountContext accountContext = (AccountContext)userDetailsService.loadUserByUsername(username);
 
+        //패스워드가 일치하지 않으면 인증실패
         if(!passwordEncoder.matches(password, accountContext.getAccount().getPassword())) {
             throw new BadCredentialsException("BadCredentialsException");
         }
 
+        //인증 요청시 username, password 이외의 파라미터를 받아 처리하는 곳
         String secretKey = ((FormWebAuthenticationDetails) authentication.getDetails()).getSecretKey();
         if (secretKey == null || !secretKey.equals("secret")) {
             throw new InsufficientAuthenticationException("Invalid Secret");
         }
 
-
+        //UsernamePasswordAuthenticationToken 두번쨰 생성자의 인증객체
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(accountContext.getAccount(), null, accountContext.getAuthorities());
         return authenticationToken;
