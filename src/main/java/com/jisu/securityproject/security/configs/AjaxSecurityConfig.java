@@ -1,6 +1,8 @@
 package com.jisu.securityproject.security.configs;
 
+import com.jisu.securityproject.security.common.AjaxLoginAuthenticationEntryPoint;
 import com.jisu.securityproject.security.filter.AjaxLoginProcessingFilter;
+import com.jisu.securityproject.security.handler.AjaxAccessDeniedHandler;
 import com.jisu.securityproject.security.handler.AjaxAuthenticationFailureHandler;
 import com.jisu.securityproject.security.handler.AjaxAuthenticationSuccessHandler;
 import com.jisu.securityproject.security.provider.AjaxAuthenticationProvider;
@@ -14,6 +16,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -57,10 +60,17 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
                 .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class) //추가하고자하는 필터가 기존의 필터 앞에 위치 할때
         ;
+        http
+                .exceptionHandling()
+                .authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
+                .accessDeniedHandler(ajaxAccessDeniedHandler());
         http.csrf().disable();
 
     }
 
+    public AccessDeniedHandler ajaxAccessDeniedHandler() {
+        return new AjaxAccessDeniedHandler();
+    }
     @Bean
     public AjaxLoginProcessingFilter ajaxLoginProcessingFilter() throws Exception{
 
