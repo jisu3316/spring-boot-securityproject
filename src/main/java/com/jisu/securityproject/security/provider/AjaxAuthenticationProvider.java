@@ -25,8 +25,6 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 
     private final PasswordEncoder passwordEncoder;
 
-
-
     /**
      * 검증을 위한 구현
      * @param authentication the authentication request object.
@@ -37,15 +35,14 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
     @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
-        String password = (String)authentication.getCredentials();
-
+        String password = (String) authentication.getCredentials();
 
         //userDetailsService 구현한 User를 상속받은 custom 객체 AccountContext
         //CustomUserDetailsService 여기서 accountContext 잘 건내받은거면 아이디는 검증된거다.
         AccountContext accountContext = (AccountContext)userDetailsService.loadUserByUsername(username);
 
         //패스워드가 일치하지 않으면 인증실패
-        if(!passwordEncoder.matches(password, accountContext.getAccount().getPassword())) {
+        if (!passwordEncoder.matches(password, accountContext.getAccount().getPassword())) {
             throw new BadCredentialsException("BadCredentialsException");
         }
 

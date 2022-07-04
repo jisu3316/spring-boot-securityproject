@@ -36,6 +36,39 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(ajaxAuthenticationProvider());
     }
 
+
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .antMatcher("/api/**")
+                .authorizeRequests()
+                .antMatchers("/api/messages").hasRole("MANAGER")
+                .antMatchers("/api/login").permitAll()
+                .anyRequest().authenticated();
+//        .and()
+//                .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class); //추가하고자하는 필터가 기존의 필터 앞에 위치 할때
+
+        http
+                .exceptionHandling()
+                .authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
+                .accessDeniedHandler(ajaxAccessDeniedHandler());
+//        http.csrf().disable();
+
+        customConfigurerAjax(http);
+
+    }
+
+    private void customConfigurerAjax(HttpSecurity http) throws Exception {
+        http
+                .apply(new AjaxLoginConfigurer<>())
+                .successHandlerAjax(ajaxAuthenticationSuccessHandler())
+                .failureHandlerAjax(ajaxAuthenticationFailureHandler())
+                .loginPage("/api/login")
+                .loginProcessingUrl("/api/login")
+                .setAuthenticationManager(authenticationManagerBean());
+    }
+
     @Bean
     public AuthenticationProvider ajaxAuthenticationProvider() {
         return new AjaxAuthenticationProvider(userDetailsService,passwordEncoder);
@@ -51,33 +84,16 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
         return new AjaxAuthenticationFailureHandler();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .antMatcher("/api/**")
-                .authorizeRequests()
-                .anyRequest().authenticated()
-        .and()
-                .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class) //추가하고자하는 필터가 기존의 필터 앞에 위치 할때
-        ;
-        http
-                .exceptionHandling()
-                .authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
-                .accessDeniedHandler(ajaxAccessDeniedHandler());
-        http.csrf().disable();
-
-    }
-
     public AccessDeniedHandler ajaxAccessDeniedHandler() {
         return new AjaxAccessDeniedHandler();
     }
-    @Bean
-    public AjaxLoginProcessingFilter ajaxLoginProcessingFilter() throws Exception{
-
-        AjaxLoginProcessingFilter ajaxLoginProcessingFilter = new AjaxLoginProcessingFilter();
-        ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
-        ajaxLoginProcessingFilter.setAuthenticationSuccessHandler(ajaxAuthenticationSuccessHandler()); //성공핸들러를 필터에 등록
-        ajaxLoginProcessingFilter.setAuthenticationFailureHandler(ajaxAuthenticationFailureHandler()); // 실패 핸들러를 필터에 등록
-        return ajaxLoginProcessingFilter;
-    }
+//    @Bean
+//    public AjaxLoginProcessingFilter ajaxLoginProcessingFilter() throws Exception{
+//
+//        AjaxLoginProcessingFilter ajaxLoginProcessingFilter = new AjaxLoginProcessingFilter();
+//        ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
+//        ajaxLoginProcessingFilter.setAuthenticationSuccessHandler(ajaxAuthenticationSuccessHandler()); //성공핸들러를 필터에 등록
+//        ajaxLoginProcessingFilter.setAuthenticationFailureHandler(ajaxAuthenticationFailureHandler()); // 실패 핸들러를 필터에 등록
+//        return ajaxLoginProcessingFilter;
+//    }
 }

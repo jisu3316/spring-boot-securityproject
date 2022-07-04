@@ -2,8 +2,10 @@ package com.jisu.securityproject.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jisu.securityproject.domain.AccountDto;
+import com.jisu.securityproject.util.WebUtil;
 import com.jisu.securityproject.security.token.AjaxAuthenticationToken;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -30,10 +32,11 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException, IOException, ServletException {
 
         //http메소드가 포스트가 아니거나 ajax가 아니면 예외 처리
-        if (!HttpMethod.POST.name().equals(request.getMethod()) || !isAjax(request)) {
+        if (!HttpMethod.POST.name().equals(request.getMethod()) || !WebUtil.isAjax(request)) {
             throw new IllegalStateException("Authentication is not supported");
         }
 
@@ -47,19 +50,7 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
         //인증처리는 ajax토큰을 만들어서 사용자 아이디 패스워드 정보를 담고 인증처리를 한다. AjaxAuthenticationToken의 첫번째 생성자
         AjaxAuthenticationToken authenticationToken = new AjaxAuthenticationToken(accountDto.getUsername(), accountDto.getPassword());
 
-
         //getAuthenticationManager에게 인증처리 위임한다.
-        return getAuthenticationManager().authenticate(authenticationToken);
-    }
-
-    /**
-     * 사용자가 요청할때 헤더에 정보를 보내는데 그 정보에 담김 값이 같은지, 그 값은서버에서 미리 정해둔다.
-     * @param request
-     * @return
-     */
-    private boolean isAjax(HttpServletRequest request) {
-
-        return XML_HTTP_REQUEST.equals(request.getHeader(X_REQUESTED_WITH));
-
+        return this.getAuthenticationManager().authenticate(authenticationToken);
     }
 }

@@ -13,7 +13,7 @@ public class AjaxLoginAuthenticationEntryPoint implements AuthenticationEntryPoi
     //익명사용자가 인증이 필요한 자원에 접속했을때 예외필터가 AjaxLoginAuthenticationEntryPoint의 메서드 호출해서 클라이언트에 전달한다.
    @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-
+       response.setContentType("application/json");
        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "UnAuthorized");
 
    }
